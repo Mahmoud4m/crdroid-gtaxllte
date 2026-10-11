@@ -1,0 +1,45 @@
+name: Source preflight
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'README.md'
+      - 'docs/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'docs/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Shell syntax check
+        run: bash -n scripts/preflight.sh
+      - name: Verify LTE target guard blocks Wi-Fi-only target
+        run: |
+          if TARGET_DEVICE=gtaxlwifi CRDROID_BRANCH=8.0 ./scripts/preflight.sh; then
+            echo 'ERROR: wrong device unexpectedly passed guard' >&2
+            exit 1
+          fi
+      - name: Verify unknown base is blocked by default
+        run: |
+          if CRDROID_BRANCH='' ./scripts/preflight.sh; then
+            echo 'ERROR: unselected source base unexpectedly passed guard' >&2
+            exit 1
+          fi
+      - name: Check candidate base metadata only
+        run: |
+          TARGET_DEVICE=gtaxllte TARGET_MODEL=SM-T585 CRDROID_BRANCH=8.0 ./scripts/preflight.sh
+          echo 'Metadata checks passed only; no sources were synced or compiled.'

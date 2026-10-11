@@ -1,0 +1,12 @@
+# Never commit Android source trees, images, logs, credentials, or private blobs
+.repo/
+out/
+ccache/
+*.img
+*.zip
+*.tar
+*.tar.gz
+*.log
+*.key
+*.pem
+.env
