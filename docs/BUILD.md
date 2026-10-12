@@ -1,31 +1,42 @@
-# Build plan
+Build plan
 
-## Candidate source baseline
+Source selection — blocked pending verification
 
-The first candidate is crDroid branch `8.0` (Android 12/12L generation) with the T585 device tree on `lineage-19.1` used as a reference. The pairing is not yet proven compatible; use it as a source-port experiment, not as a promise of a working ROM. Do not use crDroid `17.0` with this older device configuration without a separate compatibility port.
+Do not assume a crDroid branch number identifies an Android version. The previously suggested "8.0" baseline has not been verified as Android 12/12L and must not be used for a source sync.
 
-Before source sync:
+The initial goal is an Android 12L-compatible base for Samsung Galaxy Tab A 10.1 (2016) LTE ("SM-T585", "gtaxllte"), using the available LineageOS 19.1 device sources as a reference. This is a target, not a claim that a compatible crDroid base is already confirmed.
 
-1. Read the crDroid 8.0 manifest and identify the required toolchain and project revisions.
-2. Review `AndroidProducts.mk`, product makefiles, `BoardConfig.mk`, `device.mk`, dependencies and kernel configuration in the selected T585 source.
-3. Compare expected platform interfaces, vendor API level, kernel configuration, sepolicy, HALs and package names.
-4. Produce a reviewed manifest with pinned project revisions and a device-specific `crdroid.dependencies` file, then verify that source licenses permit redistribution.
-5. Make sure the actual lunch product exists. Do not assume `crdroid_gtaxllte` or `lineage_gtaxllte` works in crDroid without checking the product makefiles.
+Before selecting a branch:
 
-## Build-host requirements
+1. Inspect the exact crDroid manifest and confirm its Android platform version, project revisions, and build requirements.
+2. Review the T585 device tree, shared "gtaxl-common" tree, vendor tree, kernel source and configuration, and all declared dependencies.
+3. Compare platform interfaces, vendor compatibility, kernel requirements, SELinux policy, HALs, and product definitions.
+4. Confirm the exact product and lunch target from the checked-out source. Do not assume that "crdroid_gtaxllte" or "lineage_gtaxllte" is valid without verification.
+5. Pin source revisions and document licensing and redistribution restrictions before publishing any build.
 
-Use a Linux x86-64 host with reliable internet. For current Android sources, plan for hundreds of GB of SSD space; the Android Open Source Project guide specifies 400 GB free disk and at least 64 GB RAM for a full AOSP build. Device-specific builds vary, but a standard GitHub-hosted runner (14 GB SSD, 16 GB RAM for public repos) is not a realistic full clean-build host.
+The device target must remain "gtaxllte" / "SM-T585". Do not substitute "gtaxlwifi" / "SM-T580", which is the Wi-Fi-only model.
 
-Free-first plan: GitHub Actions on a public repository runs static checks. Run the full compile only on a trusted self-hosted Linux machine that is available at no additional cost. GitHub does not bill Actions minutes for self-hosted runners, but the hardware, internet and electricity are not automatically free. Do not attach self-hosted runners to untrusted pull-request workflows.
+Do not sync the full source tree until the base and required repositories have been reviewed.
 
-## Build sequence once the source base is approved
+Build-host requirements
 
-1. Initialize `repo` against `https://github.com/crdroidandroid/android.git -b 8.0`.
-2. Add a reviewed `.repo/local_manifests/roomservice.xml`; don't blindly copy optional forks from the legacy LineageOS manifest.
-3. Sync sources, recording all repository SHAs.
-4. Run `. build/envsetup.sh`, inspect available lunch targets, then choose the exact defined product.
-5. Build `otapackage` and preserve complete logs.
-6. Validate device assertions, archive structure, output filename and SHA-256.
-7. Test on the exact SM-T585 device before any stable release.
+Use a reliable Linux x86-64 build host. Full Android builds can require hundreds of gigabytes of SSD space and substantial RAM. The exact requirements depend on the Android base and build configuration.
 
-No script in this starter project flashes the tablet or claims to produce an installable ROM.
+The current laptop is not the planned full-build host. Use GitHub Actions for lightweight static checks only unless a suitable build runner is available.
+
+A self-hosted runner is not automatically free: hardware, connectivity, storage, and electricity still have costs. Never expose a self-hosted runner to untrusted pull-request workflows.
+
+Build sequence
+
+1. Approve and record the Android base and manifest revisions.
+2. Review and pin the device, common, vendor, kernel, and other required source repositories.
+3. Create a reviewed ".repo/local_manifests/roomservice.xml" and device-specific dependency declarations only after verifying the repository paths and branches.
+4. Sync sources and record the resolved Git SHAs.
+5. Run ". build/envsetup.sh" and inspect the actual available lunch targets.
+6. Build the verified product and preserve complete build logs.
+7. Validate the generated package, device assertions, archive structure, and SHA-256.
+8. Test on the exact SM-T585, including LTE, Wi-Fi, GPS, Bluetooth, camera, audio, suspend/resume, and reboot, before considering a stable release.
+
+Current status
+
+This repository is a development scaffold. No compatible crDroid base, successful build, or installable ROM has been confirmed. No script in this project flashes the tablet. Do not flash an experimental package or overwrite device backups as part of source preparation.
