@@ -1,0 +1,30 @@
+diff --git a/README.md b/README.md
+--- a/README.md
++++ b/README.md
+@@
+-- **First source candidate:** crDroid branch `8.0` (Android 12/12L era), using the existing LineageOS 19.1 device configuration as a compatibility reference. This pairing is a hypothesis to test, not an approved build.
++- **First source candidate:** crDroid manifest branch `12.1` (AOSP `android-12.1.0_r22`, Android 12L), using the existing LineageOS 19.1 device configuration as a compatibility reference. The source platform generation is confirmed; the device/source pairing remains unverified and is not approved for build.
+@@
+-The device tree includes explicit LTE/RIL, GPS and vibration configuration. It remains necessary to reconcile all branches and dependencies against the crDroid 8.0 source before compiling.
++The device tree includes explicit LTE/RIL, GPS and vibration configuration. The crDroid manifest branch `8.0` is not the intended base: its manifest points to AOSP `android-8.0.0_r30` and Lineage `lineage-15.0`. Use branch `12.1` as the Android 12L candidate, then reconcile all branches and dependencies before compiling.
+diff --git a/docs/BUILD.md b/docs/BUILD.md
+--- a/docs/BUILD.md
++++ b/docs/BUILD.md
+@@
+-Do not assume a crDroid branch number identifies an Android version. The previously suggested "8.0" baseline has not been verified as Android 12/12L and must not be used for a source sync.
++The selected candidate is crDroid manifest branch "12.1". Its default.xml pins AOSP to "android-12.1.0_r22" and the crDroid remote to "refs/heads/12.1", matching Android 12L. Do not use branch "8.0": its default.xml points to AOSP "android-8.0.0_r30" and Lineage "lineage-15.0".
+@@
+-1. Inspect the exact crDroid manifest and confirm its Android platform version, project revisions, and build requirements.
++1. Use crDroid manifest branch "12.1"; verify the resolved manifest revisions and build requirements.
+diff --git a/docs/SOURCES.md b/docs/SOURCES.md
+--- a/docs/SOURCES.md
++++ b/docs/SOURCES.md
+@@
+ Audit date: 2026-10-12
++
++Manifest branch correction verified on 2026-10-12: crDroidandroid/android branch "12.1" has AOSP revision "android-12.1.0_r22" and crDroid remote "refs/heads/12.1". Branch "8.0" is an obsolete Android 8-era manifest (AOSP "android-8.0.0_r30", default Lineage "lineage-15.0") and must not be used as the Android 12L base.
+@@
+ Required checks before approval
++
++The common device tree declares "android_hardware_samsung" at "hardware/samsung". Its BoardConfig also includes "vendor/samsung/gtaxl-common/BoardConfigVendor.mk"; therefore the common vendor tree is required in addition to the LTE vendor tree. Both are represented as candidates in "gtaxl.xml", but full compatibility and blob provenance remain unaudited.
+*** End Patch
