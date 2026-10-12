@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  CANDIDATE ONLY — NOT APPROVED FOR source sync, build, or flashing.
+  Device: Samsung Galaxy Tab A 10.1 (2016) LTE, SM-T585 / gtaxllte.
+  Reference trees target LineageOS 19.1 / Android 12L; compatibility with
+  the selected crDroid platform has not been proven.
+  Keep BASE_AUDIT_APPROVED=0 until docs/SOURCES.md is fully audited.
+-->
+<manifest>
+    <remote name="SeifHossam20"
+            fetch="https://github.com/SeifHossam20" />
+    <remote name="SeifHossam17"
+            fetch="https://github.com/SeifHossam17" />
+    <remote name="SLSI"
+            fetch="https://github.com/samsungexynos7870" />
+    <remote name="LineageOS"
+            fetch="https://github.com/LineageOS" />
+
+    <!-- Candidate device sources for the LTE SM-T585 -->
+    <project name="android_device_samsung_gtaxl-common"
+             path="device/samsung/gtaxl-common"
+             remote="SeifHossam20"
+             revision="lineage-19.1" />
+    <project name="android_device_samsung_gtaxllte"
+             path="device/samsung/gtaxllte"
+             remote="SeifHossam20"
+             revision="lineage-19.1" />
+    <project name="android_vendor_samsung_gtaxllte"
+             path="vendor/samsung/gtaxllte"
+             remote="SeifHossam20"
+             revision="lineage-19.1" />
+    <project name="android_kernel_samsung_exynos7870"
+             path="kernel/samsung/exynos7870"
+             remote="SeifHossam20"
+             revision="lineage-19.1" />
+
+    <!-- Exynos SLSI candidates; branch/API compatibility still needs review -->
+    <project name="android_hardware_samsung_slsi-linaro_config"
+             path="hardware/samsung_slsi-linaro/config"
+             remote="SLSI"
+             revision="lineage-19.1" />
+    <project name="android_hardware_samsung_slsi-linaro_exynos"
+             path="hardware/samsung_slsi-linaro/exynos"
+             remote="SLSI"
+             revision="lineage-19.1" />
+    <project name="android_hardware_samsung_slsi-linaro_exynos5"
+             path="hardware/samsung_slsi-linaro/exynos5"
+             remote="SLSI"
+             revision="lineage-19.1" />
+    <project name="android_hardware_samsung_slsi-linaro_graphics"
+             path="hardware/samsung_slsi-linaro/graphics"
+             remote="SLSI"
+             revision="lineage-19.1" />
+    <project name="android_hardware_samsung_slsi-linaro_openmax"
+             path="hardware/samsung_slsi-linaro/openmax"
+             remote="SLSI"
+             revision="lineage-19.1" />
+
+    <!--
+      Keep platform forks untouched until diffs against crDroid 12.1 are reviewed.
+      Intentionally omitted: frameworks/base, frameworks/native, system/bpf,
+      system/netd, hardware/libhardware, and external/aptxenc overrides.
+      Their necessity/revisions are unresolved; do not guess a branch or remote.
+    -->
+</manifest>
