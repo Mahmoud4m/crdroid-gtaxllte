@@ -67,3 +67,18 @@ Remaining blockers
 - All manifest projects must be checked for reachable URLs, branch compatibility, required patches, and commit SHAs.
 
 Status remains BLOCKED. Do not start a full source sync, enable "BASE_AUDIT_APPROVED=1", or flash anything until the dependency audit is complete.
+Frameworks and system dependency follow-up
+
+Component| Candidate repository| Branch| Status
+"frameworks/base"| "SeifHossam17/android_frameworks_base"| "lineage-19.1"| Candidate found; patch compatibility not yet verified
+"system/bpf"| "SeifHossam17/android_system_bpf"| "android-12L"| Candidate found; required revision and compatibility not yet verified
+"system/netd"| "SeifHossam17/android_system_netd"| "lineage-20.0-nobpf"| Not approved for Android 12.1; branch mismatch must be investigated
+
+Required next checks
+
+1. Compare the candidate "frameworks/base" changes against the required device manifest patches.
+2. Confirm the exact Android 12.1 revisions needed by BPF and netd.
+3. Verify all remaining manifest projects, including SLSI hardware repositories.
+4. Record exact commit SHAs only after compatibility review.
+
+Audit status: BLOCKED. These are candidate sources, not an approved manifest. Do not set "BASE_AUDIT_APPROVED=1" or start a full source sync yet.
