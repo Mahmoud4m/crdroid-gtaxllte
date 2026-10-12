@@ -1,24 +1,52 @@
-# Source audit — SM-T585 / gtaxllte
+Source audit — SM-T585 / gtaxllte
 
-## Confirmed public references
+Target
 
-| Component | Repository / branch | Audit notes |
-|---|---|---|
-| Device tree | https://github.com/miikaoskari/android_device_samsung_gtaxllte/tree/lineage-19.1 | Contains `TARGET_OTA_ASSERT_DEVICE := gtaxllte`; `device.mk` includes radio/RIL, GPS configs and vibrator service packages. |
-| Vendor tree | https://github.com/miikaoskari/android_vendor_samsung_gtaxllte/tree/lineage-19.1 | Matching LTE vendor repository; review redistribution/licensing before copying binaries elsewhere. |
-| Family manifest | https://github.com/gargomoma/gtaxl-manifests/tree/lineage-19.1 | Its `roomservice.xml` lists common/device/vendor trees, `android_kernel_samsung_exynos7870`, SLSI hardware repositories and selected forks. |
-| Original device tree | https://github.com/Valera1978/android_device_samsung_gtaxllte/tree/lineage-17.1 | Older Android 10 baseline / reference only, not a drop-in modern tree. |
-| Device ROM hub | https://github.com/ZORO2045/SM-T585-Custom-ROMs | Helpful source/index; verify exact asset/model/build before using any release. |
-| crDroid manifest | https://github.com/crdroidandroid/android/tree/17.0 | Inspected manifest currently advertises 17.0. Device support for `gtaxllte` not confirmed. |
+- Device: Samsung Galaxy Tab A 10.1 (2016) LTE
+- Model: SM-T585
+- Codename: "gtaxllte"
+- Intended base: crDroid 12.1 / Android 12.1
+- Reference device platform: LineageOS 19.1
 
-## Known pitfalls
+The target is not a confirmed working build. Do not set "BASE_AUDIT_APPROVED=1" until all required repositories and revisions have been verified.
 
-1. `gtaxllte` = SM-T585 LTE. `gtaxlwifi` = SM-T580 Wi-Fi-only. Do not interchange installable packages.
-2. The Android 12L family manifest includes forked `frameworks/base` and Permission-module changes for signature spoofing and includes bpf/netd changes due to kernel eBPF limitations. These are not automatically required for base crDroid. Audit and justify each fork before using it.
-3. Do not combine Android 12L device/vendor/kernel configuration with a much newer crDroid branch without an explicit compatibility plan. The currently inspected crDroid branch `17.0` is a different Android generation.
-4. The current device tree points to an older stock build description and needs actual build testing. Metadata alone cannot show runtime compatibility.
-5. Before building, inspect the kernel fork and exact branch/revision. The existence of a modern custom kernel release does not prove it is compatible with the selected crDroid base.
+Candidate crDroid device manifest
 
-## Selection rule
+Component| Source| Status
+crDroid platform manifest| https://github.com/crdroidandroid/android/tree/12.1| Android 12.1 manifest candidate
+Device family manifest| https://github.com/SeifHossam20/gtaxl-manifests/tree/crdroid-12.1| Historical device manifest candidate; requires dependency audit
+Device tree| https://github.com/SeifHossam20/android_device_samsung_gtaxllte/tree/lineage-19.1| Public; device product and kernel configuration references found
+Common device tree| https://github.com/SeifHossam20/android_device_samsung_gtaxl-common/tree/lineage-19.1| Public; requires full dependency review
+LTE vendor tree| https://github.com/SeifHossam20/android_vendor_samsung_gtaxllte/tree/lineage-19.1| Public; proprietary files and licensing need review
+Kernel source| https://github.com/SeifHossam20/android_kernel_samsung_exynos7870/tree/lineage-19.1| Public; Linux 3.18.140
+Required kernel config| https://github.com/SeifHossam20/android_kernel_samsung_exynos7870/blob/lineage-19.1/arch/arm64/configs/lineage-gtaxllte_defconfig| File found
 
-Choose the highest Android/crDroid base for which the device, common, vendor, kernel and required HAL/config trees can be reconciled and built reproducibly. Prefer a stable compatible base over choosing a version number solely because it is newer.
+Blocking dependency issue
+
+The candidate "gtaxl.xml" manifest references repositories hosted under the "K9100ii" account, including SLSI hardware and Android framework/system forks.
+
+These repositories could not be located through the current GitHub checks. This does not prove that every repository is permanently deleted, but the manifest must not be used unchanged until every project URL and required branch is verified.
+
+Required checks:
+
+1. Identify a reachable repository and compatible revision for every required manifest project.
+2. Confirm the required SLSI hardware projects and their Android 12.1 compatibility.
+3. Audit the "frameworks/base", "system/bpf", "system/netd", and other fork requirements. Do not remove or replace upstream projects without understanding the impact.
+4. Confirm that each project uses the correct repository path and branch.
+5. Record the resolved commit SHA for every approved source.
+
+Device identity and product
+
+The target must remain "gtaxllte" / "SM-T585".
+
+Do not substitute "gtaxlwifi" / "SM-T580".
+
+The candidate device tree declares "lineage_gtaxllte-userdebug" as a lunch choice and references "lineage-gtaxllte_defconfig". These declarations are evidence for the reference tree only; the final product configuration must be checked after integrating the chosen crDroid sources.
+
+Build gate
+
+Status: BLOCKED — source manifest dependencies are not fully verified.
+
+Do not start a full source sync, compile a release, or flash the tablet until the required projects are reachable, their branches are compatible, and the final manifest is documented.
+
+This repository remains a development scaffold. No successful crDroid build or installable package has been confirmed.
