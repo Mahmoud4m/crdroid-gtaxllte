@@ -1,84 +1,75 @@
 Source audit — SM-T585 / gtaxllte
 
+Audit date: 2026-10-12
+
 Target
 
 - Device: Samsung Galaxy Tab A 10.1 (2016) LTE
-- Model: SM-T585
+- Model: "SM-T585"
 - Codename: "gtaxllte"
-- Intended base: crDroid 12.1 / Android 12.1
-- Reference device platform: LineageOS 19.1
+- Intended platform: crDroid 12.1 / Android 12.1
+- Reference device platform: LineageOS 19.1 / Android 12L
 
-The target is not a confirmed working build. Do not set "BASE_AUDIT_APPROVED=1" until all required repositories and revisions have been verified.
+This repository is a development scaffold, not a confirmed ROM build. A branch name or reachable repository alone does not prove compatibility. Keep "BASE_AUDIT_APPROVED=0" until every required project, revision, patch set, and final product target has been reviewed.
 
-Candidate crDroid device manifest
+Candidate platform and device sources
 
-Component| Source| Status
-crDroid platform manifest| https://github.com/crdroidandroid/android/tree/12.1| Android 12.1 manifest candidate
-Device family manifest| https://github.com/SeifHossam20/gtaxl-manifests/tree/crdroid-12.1| Historical device manifest candidate; requires dependency audit
-Device tree| https://github.com/SeifHossam20/android_device_samsung_gtaxllte/tree/lineage-19.1| Public; device product and kernel configuration references found
-Common device tree| https://github.com/SeifHossam20/android_device_samsung_gtaxl-common/tree/lineage-19.1| Public; requires full dependency review
-LTE vendor tree| https://github.com/SeifHossam20/android_vendor_samsung_gtaxllte/tree/lineage-19.1| Public; proprietary files and licensing need review
-Kernel source| https://github.com/SeifHossam20/android_kernel_samsung_exynos7870/tree/lineage-19.1| Public; Linux 3.18.140
-Required kernel config| https://github.com/SeifHossam20/android_kernel_samsung_exynos7870/blob/lineage-19.1/arch/arm64/configs/lineage-gtaxllte_defconfig| File found
+Component| Candidate source| Current evidence / status
+crDroid platform| "crDroid Android, branch 12.1" (https://github.com/crdroidandroid/android/tree/12.1)| Android 12.1 manifest candidate; exact resolved manifest revisions still need recording
+Device-family manifest| "SeifHossam20/gtaxl-manifests, branch crdroid-12.1" (https://github.com/SeifHossam20/gtaxl-manifests/tree/crdroid-12.1)| Historical candidate; do not sync unchanged before dependency review
+LTE device tree| "android_device_samsung_gtaxllte, lineage-19.1" (https://github.com/SeifHossam20/android_device_samsung_gtaxllte/tree/lineage-19.1)| Public; reference product and kernel-config declarations found
+Common device tree| "android_device_samsung_gtaxl-common, lineage-19.1" (https://github.com/SeifHossam20/android_device_samsung_gtaxl-common/tree/lineage-19.1)| Public candidate; dependencies and compatibility need review
+LTE vendor tree| "android_vendor_samsung_gtaxllte, lineage-19.1" (https://github.com/SeifHossam20/android_vendor_samsung_gtaxllte/tree/lineage-19.1)| Public candidate; proprietary blobs, provenance, and redistribution terms need review
+Kernel source| "android_kernel_samsung_exynos7870, lineage-19.1" (https://github.com/SeifHossam20/android_kernel_samsung_exynos7870/tree/lineage-19.1)| Public candidate; Linux 3.18.140
+Kernel config| "lineage-gtaxllte_defconfig" (https://github.com/SeifHossam20/android_kernel_samsung_exynos7870/blob/lineage-19.1/arch/arm64/configs/lineage-gtaxllte_defconfig)| File found; options must be checked against required Android 12L interfaces and drivers
 
-Blocking dependency issue
+The reference device tree declares "lineage_gtaxllte-userdebug" and references "lineage-gtaxllte_defconfig". These are reference-tree facts only. After choosing and integrating the crDroid platform, inspect the actual product makefiles and available lunch targets; do not assume the final target name.
 
-The candidate "gtaxl.xml" manifest references repositories hosted under the "K9100ii" account, including SLSI hardware and Android framework/system forks.
+Manifest dependency audit
 
-These repositories could not be located through the current GitHub checks. This does not prove that every repository is permanently deleted, but the manifest must not be used unchanged until every project URL and required branch is verified.
+The candidate "gtaxl.xml" replaces several upstream platform projects with forks, including "frameworks/base", "frameworks/native", "system/bpf", "system/netd", and "hardware/libhardware". Do not remove or replace upstream projects unless the relevant diff establishes why the fork is necessary and the fork is compatible with the selected Android 12.1 baseline.
 
-Required checks:
+The original manifest includes projects associated with the "K9100ii" account. The source set has not been fully resolved and approved. A repository that cannot be found in a current check should be marked unresolved—not assumed permanently deleted—and must not silently be replaced by a similarly named project.
 
-1. Identify a reachable repository and compatible revision for every required manifest project.
-2. Confirm the required SLSI hardware projects and their Android 12.1 compatibility.
-3. Audit the "frameworks/base", "system/bpf", "system/netd", and other fork requirements. Do not remove or replace upstream projects without understanding the impact.
-4. Confirm that each project uses the correct repository path and branch.
-5. Record the resolved commit SHA for every approved source.
+Framework and system candidates
 
-Device identity and product
+Component| Candidate repository / branch| Verification status
+"frameworks/base"| "SeifHossam17/android_frameworks_base, lineage-19.1" (https://github.com/SeifHossam17/android_frameworks_base/tree/lineage-19.1)| Branch found; required device patches, exact diff, and compatibility with crDroid 12.1 are unverified
+"system/bpf"| "SeifHossam17/android_system_bpf, android-12L" (https://github.com/SeifHossam17/android_system_bpf/tree/android-12L)| Branch found; exact required changes and compatibility with this kernel are unverified
+"system/netd"| "SeifHossam17/android_system_netd, lineage-19.1" (https://github.com/SeifHossam17/android_system_netd/tree/lineage-19.1)| Branch found; exact diff and compatibility with the selected BPF source are unverified
+Alternative "system/netd"| "achalmgucker/android_system_netd_k9100ii, lineage-19.1" (https://github.com/achalmgucker/android_system_netd_k9100ii/tree/lineage-19.1)| Candidate only; compare with the original manifest and other fork before selecting
+Alternative "system/bpf"| "achalmgucker/android_system_bpf_k9100ii" (https://github.com/achalmgucker/android_system_bpf_k9100ii)| Reported default branch is "lineage-19.0"; no exact Android 12.1-compatible revision approved
+"external/aptxenc"| "Lost-Entrepreneur439/android_external_aptxenc, lineage-19.1" (https://github.com/Lost-Entrepreneur439/android_external_aptxenc/tree/lineage-19.1)| Candidate only; verify that it is required and matches the manifest's expected source
+Samsung Exynos SLSI hardware| "samsungexynos7870/android_hardware_samsung_slsi-linaro_exynos, lineage-19.1" (https://github.com/samsungexynos7870/android_hardware_samsung_slsi-linaro_exynos/tree/lineage-19.1)| Candidate only; verify related SLSI projects and Android 12L interfaces
+Samsung Exynos SLSI config| "samsungexynos7870/android_hardware_samsung_slsi-linaro_config, lineage-19.1" (https://github.com/samsungexynos7870/android_hardware_samsung_slsi-linaro_config/tree/lineage-19.1)| Candidate only; confirm whether the manifest requires it and check its matching revision
 
-The target must remain "gtaxllte" / "SM-T585".
+A branch existing is not the same as a compatible patch set. Do not select between alternatives based only on repository names or branch names.
 
-Do not substitute "gtaxlwifi" / "SM-T580".
+Required checks before approval
 
-The candidate device tree declares "lineage_gtaxllte-userdebug" as a lunch choice and references "lineage-gtaxllte_defconfig". These declarations are evidence for the reference tree only; the final product configuration must be checked after integrating the chosen crDroid sources.
+1. Parse the complete candidate "gtaxl.xml" and list every project path, remote URL, revision, "remove-project" entry, and copyfile/linkfile operation.
+2. Confirm every required repository URL is reachable and every requested branch or tag exists. If a project is unavailable, identify a replacement only after comparing history and required changes.
+3. Compare each fork against the exact crDroid 12.1 / Android 12.1 baseline, especially "frameworks/base", "frameworks/native", "system/bpf", "system/netd", "hardware/libhardware", and all SLSI hardware projects.
+4. Establish why BPF/netd changes are needed for this kernel; verify that any stated eBPF limitation is supported by the kernel configuration and code rather than inferred from the repository name.
+5. Audit device, common, vendor, kernel, sepolicy, HAL, VINTF, proprietary blobs, and all additional dependencies. Check interface/API compatibility, licensing, and redistribution restrictions.
+6. Record the full commit SHA for every approved project and pin the final manifest to those reviewed revisions. Branch names alone are not reproducible pins.
+7. Integrate the chosen platform and inspect the real product makefiles and lunch output. Confirm the build still targets "gtaxllte" / "SM-T585".
+8. Run lightweight manifest/XML and source consistency checks before considering any full source sync.
+
+Device identity guard
+
+The target must remain "gtaxllte" / "SM-T585". Do not substitute "gtaxlwifi" / "SM-T580", which is the Wi-Fi-only model.
 
 Build gate
 
-Status: BLOCKED — source manifest dependencies are not fully verified.
+Status: BLOCKED — manifest dependencies, fork diffs, and resolved revisions are not fully verified.
 
-Do not start a full source sync, compile a release, or flash the tablet until the required projects are reachable, their branches are compatible, and the final manifest is documented.
+Until the checks above are complete:
 
-This repository remains a development scaffold. No successful crDroid build or installable package has been confirmed.
-Follow-up dependency audit — October 2026
+- Keep "BASE_AUDIT_APPROVED=0".
+- Do not start a full source sync or compile a release.
+- Do not publish an installable-ROM claim.
+- Do not flash the tablet.
+- Preserve existing device backups.
 
-Additional candidate repositories
-
-Component| Candidate| Verification status
-"system/netd"| "achalmgucker/android_system_netd_k9100ii", branch "lineage-19.1"| Branch exists; compare required patches before use
-"system/bpf"| "achalmgucker/android_system_bpf_k9100ii"| Default branch is "lineage-19.0"; exact Android 12.1 compatibility unverified
-"external/aptxenc"| "Lost-Entrepreneur439/android_external_aptxenc", branch "lineage-19.1"| Candidate only; compare with the original manifest
-Samsung Exynos hardware| "samsungexynos7870/android_hardware_samsung_slsi-linaro_exynos", branch "lineage-19.1"| Candidate only; verify all required hardware repositories
-
-Remaining blockers
-
-- A compatible "frameworks/base" fork and its exact revision have not been confirmed.
-- The BPF repository candidate does not yet establish an exact match for the required revision.
-- All manifest projects must be checked for reachable URLs, branch compatibility, required patches, and commit SHAs.
-
-Status remains BLOCKED. Do not start a full source sync, enable "BASE_AUDIT_APPROVED=1", or flash anything until the dependency audit is complete.
-Frameworks and system dependency follow-up
-
-Component| Candidate repository| Branch| Status
-"frameworks/base"| "SeifHossam17/android_frameworks_base"| "lineage-19.1"| Candidate found; patch compatibility not yet verified
-"system/bpf"| "SeifHossam17/android_system_bpf"| "android-12L"| Candidate found; required revision and compatibility not yet verified
-"system/netd"| "SeifHossam17/android_system_netd"| "lineage-20.0-nobpf"| Not approved for Android 12.1; branch mismatch must be investigated
-
-Required next checks
-
-1. Compare the candidate "frameworks/base" changes against the required device manifest patches.
-2. Confirm the exact Android 12.1 revisions needed by BPF and netd.
-3. Verify all remaining manifest projects, including SLSI hardware repositories.
-4. Record exact commit SHAs only after compatibility review.
-
-Audit status: BLOCKED. These are candidate sources, not an approved manifest. Do not set "BASE_AUDIT_APPROVED=1" or start a full source sync yet.
+No successful crDroid build or installable package has been confirmed. Once the audit is complete, update this document with evidence and exact commit SHAs before changing the build gate.
