@@ -50,3 +50,20 @@ Status: BLOCKED — source manifest dependencies are not fully verified.
 Do not start a full source sync, compile a release, or flash the tablet until the required projects are reachable, their branches are compatible, and the final manifest is documented.
 
 This repository remains a development scaffold. No successful crDroid build or installable package has been confirmed.
+Follow-up dependency audit — October 2026
+
+Additional candidate repositories
+
+Component| Candidate| Verification status
+"system/netd"| "achalmgucker/android_system_netd_k9100ii", branch "lineage-19.1"| Branch exists; compare required patches before use
+"system/bpf"| "achalmgucker/android_system_bpf_k9100ii"| Default branch is "lineage-19.0"; exact Android 12.1 compatibility unverified
+"external/aptxenc"| "Lost-Entrepreneur439/android_external_aptxenc", branch "lineage-19.1"| Candidate only; compare with the original manifest
+Samsung Exynos hardware| "samsungexynos7870/android_hardware_samsung_slsi-linaro_exynos", branch "lineage-19.1"| Candidate only; verify all required hardware repositories
+
+Remaining blockers
+
+- A compatible "frameworks/base" fork and its exact revision have not been confirmed.
+- The BPF repository candidate does not yet establish an exact match for the required revision.
+- All manifest projects must be checked for reachable URLs, branch compatibility, required patches, and commit SHAs.
+
+Status remains BLOCKED. Do not start a full source sync, enable "BASE_AUDIT_APPROVED=1", or flash anything until the dependency audit is complete.
