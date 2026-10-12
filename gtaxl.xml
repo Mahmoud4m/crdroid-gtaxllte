@@ -2,8 +2,8 @@
 <!--
   CANDIDATE ONLY — NOT APPROVED FOR source sync, build, or flashing.
   Device: Samsung Galaxy Tab A 10.1 (2016) LTE, SM-T585 / gtaxllte.
-  Reference trees target LineageOS 19.1 / Android 12L; compatibility with
-  the selected crDroid platform has not been proven.
+  Candidate platform: crDroid manifest branch 12.1 / Android 12.1 (Android 12L).
+  Device trees reference LineageOS 19.1; compatibility with crDroid must be audited.
   Keep BASE_AUDIT_APPROVED=0 until docs/SOURCES.md is fully audited.
 -->
 <manifest>
@@ -29,9 +29,19 @@
              path="vendor/samsung/gtaxllte"
              remote="SeifHossam20"
              revision="lineage-19.1" />
+    <project name="android_vendor_samsung_gtaxl-common"
+             path="vendor/samsung/gtaxl-common"
+             remote="SeifHossam20"
+             revision="lineage-19.1" />
     <project name="android_kernel_samsung_exynos7870"
              path="kernel/samsung/exynos7870"
              remote="SeifHossam20"
+             revision="lineage-19.1" />
+
+    <!-- Required by device/samsung/gtaxl-common/lineage.dependencies -->
+    <project name="android_hardware_samsung"
+             path="hardware/samsung"
+             remote="LineageOS"
              revision="lineage-19.1" />
 
     <!-- Exynos SLSI candidates; branch/API compatibility still needs review -->
@@ -57,7 +67,7 @@
              revision="lineage-19.1" />
 
     <!--
-      Keep platform forks untouched until diffs against crDroid 12.1 are reviewed.
+      Do not override crDroid platform projects until exact diffs are reviewed.
       Intentionally omitted: frameworks/base, frameworks/native, system/bpf,
       system/netd, hardware/libhardware, and external/aptxenc overrides.
       Their necessity/revisions are unresolved; do not guess a branch or remote.
